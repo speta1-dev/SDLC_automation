@@ -1,0 +1,15 @@
+Report generated: klockwork_validation_report_20260521_112756.json
+": "PENDING",
+  "checks": {
+    "dependencies": "PASSED",
+    "fix_format": "PASSED",
+    "severity_classification": "PASSED",
+    "source_syntax": "PASSED"
+  },
+  "recommendations": [
+    "Review critical security fixes",
+    "Run full test suite",
+    "Perform code review",
+    "Test in staging environment"
+  ]
+}

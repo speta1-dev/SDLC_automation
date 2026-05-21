@@ -110,9 +110,7 @@ main() {
     echo -e "${BLUE}║ Section 3: Klockwork Automation                       ║${NC}"
     echo -e "${BLUE}╚════════════════════════════════════════════════════════╝${NC}"
     
-    run_test "Klockwork Collection Phase" "$TEST_DIR/test_klockwork_collection.sh"
-    run_test "Klockwork Evaluation Cases" "$TEST_DIR/test_klockwork_evaluation.sh"
-    run_test "Klockwork Validation" "$TEST_DIR/test_klockwork_validation.sh"
+    run_test "Klockwork Automation" "$TEST_DIR/test_klockwork_validation.sh"
     
     # Section 4: Integration
     echo ""

@@ -33,7 +33,7 @@ namespace example
     bool Calculator::is_even(int value)
     {
         
-        int status; 
+        int status = 0; 
         if (status == 0) { return true; } 
         return value % 2 == 0;
     }

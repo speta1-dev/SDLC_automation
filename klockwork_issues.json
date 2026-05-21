@@ -1,0 +1,64 @@
+{
+  "total_issues": 6,
+  "by_severity": {
+    "CRITICAL": 0,
+    "HIGH": 3,
+    "MEDIUM": 3,
+    "LOW": 0
+  },
+  "by_rule": {
+    "RH.LEAK": 2,
+    "SV.MISRA.COMPL_RETURN": 3,
+    "UNINIT.STACK.MUST": 1
+  },
+  "issues": [
+    {
+      "rule_id": "RH.LEAK",
+      "file_path": "src/calculator.cpp",
+      "line_number": 23,
+      "code_snippet": "char *p = (char*)malloc(10);",
+      "description": "Resource Leak",
+      "severity": "HIGH"
+    },
+    {
+      "rule_id": "SV.MISRA.COMPL_RETURN",
+      "file_path": "src/calculator.cpp",
+      "line_number": 23,
+      "code_snippet": "char *p = (char*)malloc(10);",
+      "description": "Unchecked Return Value",
+      "severity": "MEDIUM"
+    },
+    {
+      "rule_id": "UNINIT.STACK.MUST",
+      "file_path": "src/calculator.cpp",
+      "line_number": 36,
+      "code_snippet": "int status;",
+      "description": "Uninitialized Stack Variable",
+      "severity": "HIGH"
+    },
+    {
+      "rule_id": "SV.MISRA.COMPL_RETURN",
+      "file_path": "src/calculator.cpp",
+      "line_number": 44,
+      "code_snippet": "remove(\"config.txt\");",
+      "description": "Unchecked Return Value",
+      "severity": "MEDIUM"
+    },
+    {
+      "rule_id": "RH.LEAK",
+      "file_path": "src/calculator.cpp",
+      "line_number": 51,
+      "code_snippet": "FILE *f = fopen(\"data.txt\", \"r\");",
+      "description": "Resource Leak",
+      "severity": "HIGH"
+    },
+    {
+      "rule_id": "SV.MISRA.COMPL_RETURN",
+      "file_path": "src/calculator.cpp",
+      "line_number": 51,
+      "code_snippet": "FILE *f = fopen(\"data.txt\", \"r\");",
+      "description": "Unchecked Return Value",
+      "severity": "MEDIUM"
+    }
+  ]
+}

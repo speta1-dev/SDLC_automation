@@ -32,6 +32,22 @@ else
     echo "⚠️  Validation had warnings (see output)"
 fi
 
+# Verify generated klocwork output
+echo "Verifying klocwork output directory..."
+if [[ -d "klocwork/src" ]]; then
+    echo "✅ klocwork/src exists"
+else
+    echo "❌ klocwork/src not found"
+    exit 1
+fi
+
+if [[ -f "klocwork/src/calculator.cpp" ]]; then
+    echo "✅ Generated klocwork/src/calculator.cpp"
+else
+    echo "❌ Expected generated file klocwork/src/calculator.cpp not found"
+    exit 1
+fi
+
 # Show validation output
 echo "Validation checks:"
 grep -E "✓|PASSED|Check" /tmp/validation_output_test.txt 2>/dev/null | head -10 || echo "No validation output found"

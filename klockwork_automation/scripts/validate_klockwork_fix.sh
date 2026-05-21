@@ -131,7 +131,7 @@ print(invalid)
 
 # Run quick syntax check on modified source files
 validate_source_syntax() {
-    log_info "Validating source file syntax..."
+    log_info "Validating generated klocwork file syntax..."
     
     if ! command -v gcc &> /dev/null && ! command -v clang &> /dev/null; then
         log_warn "C compiler not found, skipping syntax validation"
@@ -144,22 +144,42 @@ validate_source_syntax() {
     fi
     
     local errors=0
-    for file in $(git diff --name-only HEAD | grep -E '\.(c|cpp|h|hpp)$' || true); do
+    while IFS= read -r file; do
         if [[ -f "$file" ]]; then
-            if ! $compiler -fsyntax-only "$file" 2>/dev/null; then
+            if ! $compiler -fsyntax-only -I "$REPO_DIR/klocwork" "$file" 2>/dev/null; then
                 log_warn "Syntax error in $file (will require manual review)"
                 ((errors++))
             fi
         fi
-    done
+    done < <(find "$REPO_DIR/klocwork" -type f | grep -E '\.(c|cpp|h|hpp)$' || true)
     
     if [[ $errors -gt 0 ]]; then
-        log_warn "Found $errors files with syntax issues"
+        log_warn "Found $errors generated files with syntax issues"
         return 1
     fi
     
-    log_info "Source syntax validation passed"
+    log_info "Generated klocwork syntax validation passed"
     return 0
+}
+
+# Generate a fixed Klockwork code base using a generative model
+generate_klocwork_fixed_code() {
+    log_info "Generating fixed Klockwork code into klocwork/ ..."
+
+    local generator="$SCRIPT_DIR/generate_klocwork_fixes.py"
+
+    if [[ ! -f "$generator" ]]; then
+        log_error "Generator script not found: $generator"
+        return 1
+    fi
+
+    python3 "$generator" \
+        --issues-file "$latest_issues_file" \
+        --source-dir "$SOURCE_DIR" \
+        --output-dir "$REPO_DIR/klocwork" \
+        --prompt-file "$SCRIPT_DIR/../prompts/klockwork_fixer.prompt.yml"
+
+    return $?
 }
 
 # Validate that critical rules are addressed
@@ -241,12 +261,22 @@ main() {
         return 1
     fi
     
-    # Find fix files
-    local latest_fix_file=$(ls -t klockwork_fixes_*.json 2>/dev/null | head -1)
+    # Ensure issues file exists
     local latest_issues_file="klockwork_issues.json"
-    
+    if [[ ! -f "$latest_issues_file" ]]; then
+        log_info "Issues file not found, collecting issues first..."
+        python3 "$SCRIPT_DIR/collect_klockwork_issues.py" --source-dir "$SOURCE_DIR" --output "$latest_issues_file" || return 1
+    fi
+
+    if ! generate_klocwork_fixed_code; then
+        log_error "Klockwork code generation failed"
+        return 1
+    fi
+
+    # Find the latest generated fix report
+    local latest_fix_file=$(ls -t klockwork_fixes_*.json 2>/dev/null | head -1)
     if [[ -z "$latest_fix_file" ]]; then
-        log_error "No fix file found. Run orchestrate_klockwork_fix.py first"
+        log_error "No fix file found after generation"
         return 1
     fi
     
