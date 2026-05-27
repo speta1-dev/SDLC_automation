@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <cstring>
+#include <iostream>
 
 namespace example
 {
@@ -14,6 +16,18 @@ namespace example
     int Calculator::add(int a, int b)
     {
         return a + b;
+    }
+
+    void unsafe_copy(const char *src)
+    {
+        char buffer[10]; // fixed small buffer
+        std::strcpy(buffer, src);
+        std::cout << "Copied string: " << buffer << std::endl;
+    }
+
+    int risky_divide(int a, int b)
+    {
+        return a / b;
     }
 
     std::optional<double> Calculator::safe_divide(double numerator, double denominator)
